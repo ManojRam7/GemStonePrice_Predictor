@@ -1,0 +1,17 @@
+[ 2024-12-03 00:03:35,453 ] 97 werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.8:8000
+[ 2024-12-03 00:03:35,453 ] 97 werkzeug - INFO - [33mPress CTRL+C to quit[0m
+[ 2024-12-03 00:04:16,976 ] 97 werkzeug - INFO - 127.0.0.1 - - [03/Dec/2024 00:04:16] "GET / HTTP/1.1" 200 -
+[ 2024-12-03 00:04:17,028 ] 97 werkzeug - INFO - 127.0.0.1 - - [03/Dec/2024 00:04:17] "[32mGET /static//Image/your_profile_pic.jpg HTTP/1.1[0m" 308 -
+[ 2024-12-03 00:04:17,035 ] 97 werkzeug - INFO - 127.0.0.1 - - [03/Dec/2024 00:04:17] "GET /static/css/style.css HTTP/1.1" 200 -
+[ 2024-12-03 00:04:17,053 ] 97 werkzeug - INFO - 127.0.0.1 - - [03/Dec/2024 00:04:17] "[33mGET /static/Image/your_profile_pic.jpg HTTP/1.1[0m" 404 -
+[ 2024-12-03 00:04:17,067 ] 97 werkzeug - INFO - 127.0.0.1 - - [03/Dec/2024 00:04:17] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+[ 2024-12-03 00:05:20,253 ] 61 root - INFO - Dataframe Gathered
+[ 2024-12-03 00:05:20,772 ] 97 werkzeug - INFO - 127.0.0.1 - - [03/Dec/2024 00:05:20] "POST /predict HTTP/1.1" 200 -
+[ 2024-12-03 00:05:20,784 ] 97 werkzeug - INFO - 127.0.0.1 - - [03/Dec/2024 00:05:20] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+[ 2024-12-03 00:05:20,786 ] 97 werkzeug - INFO - 127.0.0.1 - - [03/Dec/2024 00:05:20] "[33mGET /static/Image/your_profile_pic.jpg HTTP/1.1[0m" 404 -
+[ 2024-12-03 00:05:53,447 ] 97 werkzeug - INFO - 127.0.0.1 - - [03/Dec/2024 00:05:53] "GET / HTTP/1.1" 200 -
+[ 2024-12-03 00:05:53,503 ] 97 werkzeug - INFO - 127.0.0.1 - - [03/Dec/2024 00:05:53] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+[ 2024-12-03 00:05:53,523 ] 97 werkzeug - INFO - 127.0.0.1 - - [03/Dec/2024 00:05:53] "[33mGET /static/Image/your_profile_pic.jpg HTTP/1.1[0m" 404 -

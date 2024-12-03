@@ -1,0 +1,4 @@
+[ 2024-12-03 00:35:12,629 ] 97 werkzeug - WARNING -  * Debugger is active!
+[ 2024-12-03 00:35:12,639 ] 97 werkzeug - INFO -  * Debugger PIN: 228-993-586
+[ 2024-12-03 00:35:23,301 ] 97 werkzeug - INFO - 127.0.0.1 - - [03/Dec/2024 00:35:23] "GET / HTTP/1.1" 200 -
+[ 2024-12-03 00:35:23,360 ] 97 werkzeug - INFO - 127.0.0.1 - - [03/Dec/2024 00:35:23] "GET /static/css/style.css HTTP/1.1" 200 -

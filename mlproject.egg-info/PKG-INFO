@@ -1,0 +1,17 @@
+Metadata-Version: 2.1
+Name: mlproject
+Version: 0.0.1
+Author: Manojram7
+Author-email: manojrammopati@outlook.com
+Requires-Dist: numpy
+Requires-Dist: pandas
+Requires-Dist: matplotlib
+Requires-Dist: seaborn
+Requires-Dist: scikit-learn
+Requires-Dist: ipykernel
+Requires-Dist: catboost
+Requires-Dist: xgboost
+Requires-Dist: dill
+Requires-Dist: flask
+Requires-Dist: flask_cors
+Requires-Dist: lime
