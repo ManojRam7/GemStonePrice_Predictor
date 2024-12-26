@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from some_module import PredictPipeline, data  # Replace 'some_module' with your actual module
+from pipeline.utils import PredictPipeline, data  # Replace 'some_module' with your actual module
 
 # Title of the app
 st.title("Gemstone Price Prediction")
