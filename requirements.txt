@@ -1,13 +1,13 @@
 streamlit
-numpy
+numpy ==1.23.5
 pandas
 matplotlib
 seaborn
-scikit-learn
+scikit-learn ==1.5.2
 ipykernel
 catboost
 xgboost
-dill
+dill ==0.3.6
 flask
 flask_cors
 lime
