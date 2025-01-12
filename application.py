@@ -63,3 +63,49 @@ def predict_api():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8000, debug=True)
+    
+    
+    
+    
+    
+    
+  #  streamlit previous code
+    '''
+import streamlit as st
+import pandas as pd
+import dill
+
+# Load the preprocessor and model
+with open('artifacts/preprocessor.pkl', 'rb') as file:
+    preprocessor = dill.load(file)
+
+with open('artifacts/model.pkl', 'rb') as file:
+    model = dill.load(file)
+
+# Streamlit app
+st.title('Gemstone Price Predictor')
+
+carat = st.number_input('Carat')
+cut = st.selectbox('Cut', ['Fair', 'Good', 'Very Good', 'Premium', 'Ideal'])
+color = st.selectbox('Color', ['D', 'E', 'F', 'G', 'H', 'I', 'J'])
+clarity = st.selectbox('Clarity', ['I1', 'SI2', 'SI1', 'VS2', 'VS1', 'VVS2', 'VVS1', 'IF'])
+depth = st.number_input('Depth')
+table = st.number_input('Table')
+x = st.number_input('X')
+y = st.number_input('Y')
+z = st.number_input('Z')
+
+if st.button('Predict'):
+    try:
+        # Create input data DataFrame
+        input_data = pd.DataFrame([[carat, cut, color, clarity, depth, table, x, y, z]], 
+                                  columns=['carat', 'cut', 'color', 'clarity', 'depth', 'table', 'x', 'y', 'z'])
+        
+        # Make prediction
+        scaled_data = preprocessor.transform(input_data)
+        prediction = model.predict(scaled_data)
+        
+        st.success(f'Predicted Gemstone Price: ${prediction[0]:,.2f}')
+    except Exception as e:
+        st.error(f'An error occurred: {str(e)}')
+        '''
