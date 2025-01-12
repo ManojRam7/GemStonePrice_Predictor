@@ -3,6 +3,7 @@ Name: mlproject
 Version: 0.0.1
 Author: Manojram7
 Author-email: manojrammopati@outlook.com
+Requires-Dist: streamlit
 Requires-Dist: numpy
 Requires-Dist: pandas
 Requires-Dist: matplotlib

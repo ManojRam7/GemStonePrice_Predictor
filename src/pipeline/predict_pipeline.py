@@ -1,66 +1,58 @@
-import sys
+import streamlit as st
 import pandas as pd
-from src.exception import CustomException
-from src.logger import logging
-from src.utils import load_object
+import os
+from src.pipeline.predict_pipeline import PredictPipeline
 
-class PredictPipeline:
-    def __init__(self):
-        pass
+# Title of the app
+st.title("Gemstone Price Prediction")
 
-    def predict(self, features):
-        try:
-            preprocessor_path = 'artifacts/preprocessor.pkl'
-            model_path = 'artifacts/model.pkl'
-            preprocessor = load_object(file_path=preprocessor_path)
-            model = load_object(file_path=model_path)
-            data_scaled = preprocessor.transform(features)
-            pred = model.predict(data_scaled)
-            return pred
-        except Exception as e:
-            logging.info('Exception occured in prediction pipeline')
-            raise CustomException(e,sys)
+# Input fields
+carat = st.number_input("Enter carat value (float)", step=0.01, format="%.2f")
+depth = st.number_input("Enter depth value (float)", step=0.01, format="%.2f")
+table = st.number_input("Enter table value (float)", step=0.01, format="%.2f")
+x = st.number_input("Enter x value (float)", step=0.01, format="%.2f")
+y = st.number_input("Enter y value (float)", step=0.01, format="%.2f")
+z = st.number_input("Enter z value (float)", step=0.01, format="%.2f")
+cut = st.selectbox("Select cut", options=["Fair", "Good", "Very Good", "Premium", "Ideal"])
+color = st.selectbox("Select color", options=["D", "E", "F", "G", "H", "I", "J"])
+clarity = st.selectbox("Select clarity", options=["IF", "VVS1", "VVS2", "VS1", "VS2", "SI1", "SI2", "I1"])
+
+# Prediction button
+if st.button("Submit"):
+    try:
+        # Create input DataFrame
+        input_data = pd.DataFrame({
+            "carat": [carat],
+            "depth": [depth],
+            "table": [table],
+            "x": [x],
+            "y": [y],
+            "z": [z],
+            "cut": [cut],
+            "color": [color],
+            "clarity": [clarity]
+        })
+
+        # Dynamically adjust the working directory
+        current_dir = os.getcwd()
+        artifact_dir = os.path.join(current_dir, "artifacts")
+
+        # Check if the artifacts directory exists
+        if not os.path.exists(artifact_dir):
+            st.error(f"Artifacts directory not found: {artifact_dir}")
+        else:
+            st.write(f"Using artifacts from: {artifact_dir}")
         
+        # Temporarily change directory to resolve paths
+        os.chdir(current_dir)
 
-class CustomData:
-    def __init__(self,
-                 carat:float,
-                 depth:float,
-                 table:float,
-                 x:float,
-                 y:float,
-                 z:float,
-                 cut:str,
-                 color:str,
-                 clarity:str):
-        
-        self.carat = carat
-        self.depth = depth
-        self.table = table
-        self.x = x
-        self.y = y
-        self.z = z
-        self.cut = cut
-        self.color = color
-        self.clarity = clarity
+        # Load prediction pipeline
+        predict_pipeline = PredictPipeline()
 
-    def get_data_as_dataframe(self):
-        try:
-            custom_data_input_dict = {
-                'carat':[self.carat],
-                'depth':[self.depth],
-                'table':[self.table],
-                'x':[self.x],
-                'y':[self.y],
-                'z':[self.z],
-                'cut':[self.cut],
-                'color':[self.color],
-                'clarity':[self.clarity]
-            }
-            df = pd.DataFrame(custom_data_input_dict)
-            logging.info('Dataframe Gathered')
-            return df
-        except Exception as e:
-            logging.info('Exception Occured in prediction pipeline')
-            raise CustomException(e,sys)
-            
+        # Perform prediction
+        prediction = predict_pipeline.predict(input_data)
+
+        # Display prediction
+        st.success(f"Predicted Gemstone Price is: ${round(prediction[0], 2)}")
+    except Exception as e:
+        st.error(f"Error occurred during prediction: {e}")
