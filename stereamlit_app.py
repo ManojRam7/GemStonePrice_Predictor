@@ -46,6 +46,3 @@ if st.button('Predict'):
     except Exception as e:
         logging.error(f"Error making prediction: {e}")
         st.error(f'An error occurred: {str(e)}')
-        
-        
-        
