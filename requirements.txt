@@ -5,7 +5,7 @@ matplotlib==3.6.3
 seaborn==0.12.2
 scikit-learn==1.2.2
 ipykernel==6.21.3
-catboost==1.1.1
+#catboost==1.1.0
 xgboost==1.7.5
 dill==0.3.6
 flask==2.2.3
