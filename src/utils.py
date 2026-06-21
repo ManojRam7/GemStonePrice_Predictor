@@ -2,8 +2,7 @@ import os
 import sys
 
 import numpy as np 
-import pandas as pd
-import dill
+from joblib import dump, load
 from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
 
 from src.exception import CustomException
@@ -15,8 +14,7 @@ def save_object(file_path, obj):
 
         os.makedirs(dir_path, exist_ok=True)
 
-        with open(file_path, "wb") as file_obj:
-            dill.dump(obj, file_obj)
+        dump(obj, file_path)
 
     except Exception as e:
         raise CustomException(e, sys)
@@ -87,8 +85,7 @@ def print_evaluated_results(xtrain,ytrain,xtest,ytest,model):
     
 def load_object(file_path):
     try:
-        with open(file_path,'rb') as file_obj:
-            return dill.load(file_obj)
+        return load(file_path)
     except Exception as e:
         logging.info('Exception Occured in load_object function utils')
         raise CustomException(e,sys)

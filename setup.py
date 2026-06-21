@@ -1,32 +1,26 @@
+from pathlib import Path
 from setuptools import find_packages, setup
-from typing import List
 
-HYPHEN_E_DOT = '-e .'
 
-def get_requirements(file_path:str)->List[str]:
-    '''
-    This function will return list of requirements
-    from requirements.txt file
-    '''
-    # Initializing blank requirements list
+ROOT = Path(__file__).parent
+REQUIREMENTS_PATH = ROOT / "requirements.txt"
+
+
+def get_requirements(path: Path) -> list[str]:
     requirements = []
-
-    # Opening the file
-    with open(file_path) as file_obj:
-        requirements = file_obj.readlines()
-        requirements = [req.replace("\n","") for req in requirements]
-        
-        # Remove hyphen_e_dot if present in requirements
-        if HYPHEN_E_DOT in requirements:
-            requirements.remove(HYPHEN_E_DOT)
-
+    for line in path.read_text(encoding="utf-8").splitlines():
+        clean = line.strip()
+        if clean and not clean.startswith("#") and clean != "-e .":
+            requirements.append(clean)
     return requirements
 
+
 setup(
-    name = 'mlproject',
-    version= '0.0.1',
-    author='Manojram7',
-    author_email='manojrammopati@outlook.com',
-    packages = find_packages(),
-    install_requires = get_requirements('requirements.txt')
+    name="gemstone-price-predictor",
+    version="1.0.0",
+    author="Manoj Ram",
+    description="Portfolio-grade end-to-end gemstone price prediction project",
+    packages=find_packages(),
+    python_requires=">=3.9",
+    install_requires=get_requirements(REQUIREMENTS_PATH),
 )

@@ -1,58 +1,60 @@
-import streamlit as st
-import pandas as pd
 import os
-from src.pipeline.predict_pipeline import PredictPipeline
+import sys
+from dataclasses import dataclass
 
-# Title of the app
-st.title("Gemstone Price Prediction")
+import pandas as pd
 
-# Input fields
-carat = st.number_input("Enter carat value (float)", step=0.01, format="%.2f")
-depth = st.number_input("Enter depth value (float)", step=0.01, format="%.2f")
-table = st.number_input("Enter table value (float)", step=0.01, format="%.2f")
-x = st.number_input("Enter x value (float)", step=0.01, format="%.2f")
-y = st.number_input("Enter y value (float)", step=0.01, format="%.2f")
-z = st.number_input("Enter z value (float)", step=0.01, format="%.2f")
-cut = st.selectbox("Select cut", options=["Fair", "Good", "Very Good", "Premium", "Ideal"])
-color = st.selectbox("Select color", options=["D", "E", "F", "G", "H", "I", "J"])
-clarity = st.selectbox("Select clarity", options=["IF", "VVS1", "VVS2", "VS1", "VS2", "SI1", "SI2", "I1"])
+from src.exception import CustomException
+from src.utils import load_object
 
-# Prediction button
-if st.button("Submit"):
-    try:
-        # Create input DataFrame
-        input_data = pd.DataFrame({
-            "carat": [carat],
-            "depth": [depth],
-            "table": [table],
-            "x": [x],
-            "y": [y],
-            "z": [z],
-            "cut": [cut],
-            "color": [color],
-            "clarity": [clarity]
-        })
 
-        # Dynamically adjust the working directory
-        current_dir = os.getcwd()
-        artifact_dir = os.path.join(current_dir, "artifacts")
+@dataclass
+class CustomData:
+    carat: float
+    depth: float
+    table: float
+    x: float
+    y: float
+    z: float
+    cut: str
+    color: str
+    clarity: str
 
-        # Check if the artifacts directory exists
-        if not os.path.exists(artifact_dir):
-            st.error(f"Artifacts directory not found: {artifact_dir}")
-        else:
-            st.write(f"Using artifacts from: {artifact_dir}")
-        
-        # Temporarily change directory to resolve paths
-        os.chdir(current_dir)
+    def get_data_as_dataframe(self) -> pd.DataFrame:
+        try:
+            custom_data_input_dict = {
+                "carat": [self.carat],
+                "depth": [self.depth],
+                "table": [self.table],
+                "x": [self.x],
+                "y": [self.y],
+                "z": [self.z],
+                "cut": [self.cut],
+                "color": [self.color],
+                "clarity": [self.clarity],
+            }
+            return pd.DataFrame(custom_data_input_dict)
+        except Exception as e:
+            raise CustomException(e, sys)
 
-        # Load prediction pipeline
-        predict_pipeline = PredictPipeline()
 
-        # Perform prediction
-        prediction = predict_pipeline.predict(input_data)
+class PredictPipeline:
+    def __init__(
+        self,
+        model_path: str = os.path.join("artifacts", "model.pkl"),
+        preprocessor_path: str = os.path.join("artifacts", "preprocessor.pkl"),
+    ):
+        self.model_path = model_path
+        self.preprocessor_path = preprocessor_path
 
-        # Display prediction
-        st.success(f"Predicted Gemstone Price is: ${round(prediction[0], 2)}")
-    except Exception as e:
-        st.error(f"Error occurred during prediction: {e}")
+    def predict(self, features: pd.DataFrame):
+        try:
+            preprocessor = load_object(self.preprocessor_path)
+            model = load_object(self.model_path)
+
+            transformed_data = preprocessor.transform(features)
+            predictions = model.predict(transformed_data)
+            return predictions
+
+        except Exception as e:
+            raise CustomException(e, sys)
