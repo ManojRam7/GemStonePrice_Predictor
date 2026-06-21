@@ -68,7 +68,7 @@ GemStonePrice_Predictor/
 ### 1. Clone and setup
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/ManojRam7/GemStonePrice_Predictor.git
 cd GemStonePrice_Predictor
 python -m venv .venv
 source .venv/bin/activate  # macOS/Linux
