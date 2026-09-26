@@ -35,3 +35,6 @@ notebook/catboost_info/
 
 # Environment files
 .env
+
+# CatBoost training logs
+catboost_info/

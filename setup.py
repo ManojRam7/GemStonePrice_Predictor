@@ -19,7 +19,7 @@ setup(
     name="gemstone-price-predictor",
     version="1.0.0",
     author="Manoj Ram",
-    description="Portfolio-grade end-to-end gemstone price prediction project",
+    description="Gemstone price prediction: training pipeline, Flask API and Streamlit app",
     packages=find_packages(),
     python_requires=">=3.9",
     install_requires=get_requirements(REQUIREMENTS_PATH),

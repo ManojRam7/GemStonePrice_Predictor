@@ -1,160 +1,74 @@
-# 💎 Gemstone Price Predictor
+# Gemstone Price Predictor
+
+Predicts the price of a gemstone from its carat, cut, colour, clarity, depth, table and x, y, z
+dimensions. A modular training pipeline (ingestion, transformation, model selection) tunes several
+regressors and keeps the best one by test R²; predictions are served through a Flask app with a
+JSON endpoint and through a Streamlit app.
 
 ![Python](https://img.shields.io/badge/Python-3.9%2B-3776AB?logo=python&logoColor=white)
-![scikit-learn](https://img.shields.io/badge/scikit--learn-ML-F7931E?logo=scikit-learn&logoColor=white)
-![Streamlit](https://img.shields.io/badge/Streamlit-App-FF4B4B?logo=streamlit&logoColor=white)
-![Flask](https://img.shields.io/badge/Flask-API-000000?logo=flask&logoColor=white)
-![Status](https://img.shields.io/badge/Status-Production%20Ready-1f9d55)
-![License](https://img.shields.io/badge/License-MIT-blue)
+![scikit-learn](https://img.shields.io/badge/scikit--learn-F7931E?logo=scikitlearn&logoColor=white)
+![CatBoost](https://img.shields.io/badge/CatBoost-FFCC00)
+![XGBoost](https://img.shields.io/badge/XGBoost-337AB7)
+![Flask](https://img.shields.io/badge/Flask-000000?logo=flask&logoColor=white)
+![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?logo=streamlit&logoColor=white)
 
-A production-polished, end-to-end machine learning project that predicts **gemstone prices** from physical and quality attributes.
+## Results
 
-## ✨ Highlights
+Kaggle Playground Series S3E8 data, 193,573 gemstones, 80/20 split (154,858 / 38,715):
 
-- ✅ End-to-end ML pipeline: ingestion → transformation → training → inference
-- ✅ Model selection with tuned ensemble-style tree-based regressors
-- ✅ Two serving interfaces:
-  - Streamlit app for demos
-  - Flask app + JSON API for integration
-- ✅ Clean project structure and reproducible artifacts
-- ✅ Portfolio-grade documentation and UI polish
+| Model | Test R² | Test RMSE | Test MAE |
+|---|---|---|---|
+| **CatBoost (tuned)** | **0.9795** | **575** | **295** |
+| XGBoost (tuned) | 0.9794 | 576 | 293 |
+| Voting ensemble (CatBoost + KNN + XGBoost) | 0.9795 | 575 | 293 |
+| KNN (tuned, k = 16) | 0.9743 | 644 | 336 |
+| Random forest | 0.9771 | | |
+| Linear regression | 0.9373 | 1,007 | 672 |
 
-## 🧱 Project Structure
+Tuning moved CatBoost from 0.9792 to 0.9795; the voting ensemble matched it without improving on it,
+so the single tuned CatBoost model is the simpler choice.
+
+## Approach
+
+- **EDA** (`notebook/1_EDA_Gemstone_price.ipynb`): no missing values or duplicates; cut, colour and
+  clarity are ordinal, so they are mapped to ordered integers; mutual information shows carat and
+  the x, y, z dimensions carry most of the signal.
+- **Modelling** (`notebook/2_Model_Training_Gemstone.ipynb`): nine regressors compared, then
+  CatBoost, KNN and XGBoost tuned with randomised and grid search, and a voting ensemble tried.
+- **Explainability** (`notebook/3_Explainability_with_LIME.ipynb`): LIME explanations of individual
+  price predictions.
+- **Pipeline** (`src/`): `data_ingestion.py` splits the data, `data_transformation.py` builds the
+  preprocessing (ordinal encoding and scaling), `model_trainer.py` tunes the candidates and saves the
+  best model and preprocessor to `artifacts/`.
+
+## Run it
+
+```bash
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+
+python -m src.pipeline.train_pipeline     # retrain; writes artifacts/model.pkl and preprocessor.pkl
+streamlit run streamlit_app.py             # Streamlit app
+python application.py                      # Flask app on http://127.0.0.1:8000
+```
+
+JSON endpoint:
+
+```bash
+curl -X POST http://127.0.0.1:8000/predictAPI -H "Content-Type: application/json" \
+  -d '{"carat": 1.52, "depth": 62.2, "table": 58.0, "x": 7.27, "y": 7.33, "z": 4.55,
+       "cut": "Premium", "color": "F", "clarity": "VS2"}'
+```
+
+## Project structure
 
 ```text
-GemStonePrice_Predictor/
-├── application.py                 # Flask app entrypoint
-├── streamlit_app.py               # Streamlit app entrypoint
-├── requirements.txt
-├── setup.py
-├── artifacts/                     # Generated model/preprocessor/data artifacts
-├── notebook/                      # EDA, modeling, explainability notebooks
-├── src/
-│   ├── components/
-│   │   ├── data_ingestion.py
-│   │   ├── data_transformation.py
-│   │   └── model_trainer.py
-│   ├── pipeline/
-│   │   ├── predict_pipeline.py
-│   │   └── train_pipeline.py
-│   ├── exception.py
-│   ├── logger.py
-│   └── utils.py
-├── static/
-│   └── css/style.css
-└── templates/
-    └── index.html
+application.py               Flask app: form at /, JSON at /predictAPI
+streamlit_app.py             Streamlit app
+src/components/              data_ingestion, data_transformation, model_trainer
+src/pipeline/                train_pipeline, predict_pipeline
+src/utils.py, logger.py, exception.py
+notebook/                    EDA, model training, LIME explainability, data
+artifacts/                   trained model and preprocessor
+templates/, static/          Flask front end
 ```
-
-## 📊 Dataset
-
-- Source: Kaggle Playground Series S3E8 (diamond/gemstone pricing)
-- Expected columns:
-  - Features: `carat`, `depth`, `table`, `x`, `y`, `z`, `cut`, `color`, `clarity`
-  - Target: `price`
-- Default data path used in training:
-  - `notebook/data/gemstone.csv`
-
-## ⚙️ Tech Stack
-
-- **Core ML**: scikit-learn, CatBoost, XGBoost
-- **Data**: pandas, numpy
-- **Serving**: Flask, Streamlit
-- **Serialization**: joblib
-- **Explainability**: LIME (notebook workflow)
-
-## 🚀 Quickstart
-
-### 1. Clone and setup
-
-```bash
-git clone https://github.com/ManojRam7/GemStonePrice_Predictor.git
-cd GemStonePrice_Predictor
-python -m venv .venv
-source .venv/bin/activate  # macOS/Linux
-python -m pip install --upgrade pip
-pip install -r requirements.txt
-```
-
-### 2. Train pipeline
-
-```bash
-python -m src.pipeline.train_pipeline
-```
-
-This creates/updates:
-
-- `artifacts/data.csv`
-- `artifacts/train.csv`
-- `artifacts/test.csv`
-- `artifacts/preprocessor.pkl`
-- `artifacts/model.pkl`
-
-### 3. Run Streamlit app
-
-```bash
-streamlit run streamlit_app.py
-```
-
-### 4. Run Flask app
-
-```bash
-python application.py
-```
-
-- UI endpoint: `http://127.0.0.1:8000/`
-- API endpoint: `POST /predictAPI`
-
-Sample JSON payload:
-
-```json
-{
-  "carat": 0.8,
-  "depth": 62.0,
-  "table": 57.0,
-  "x": 5.7,
-  "y": 5.7,
-  "z": 3.5,
-  "cut": "Ideal",
-  "color": "F",
-  "clarity": "VS1"
-}
-```
-
-## 🧠 ML Workflow
-
-1. **Data Ingestion**
-   - Loads source CSV and creates train/test splits.
-2. **Data Transformation**
-   - Numeric: median imputation + scaling.
-   - Categorical: frequent imputation + ordinal encoding + scaling.
-3. **Model Training**
-   - Trains and tunes multiple tree-based regressors.
-   - Selects best model by test-set R².
-4. **Inference Pipeline**
-   - Applies saved preprocessor and model for predictions.
-
-## 📘 Notebooks
-
-- EDA: `notebook/1_EDA_Gemstone_price.ipynb`
-- Model experiments: `notebook/2_Model_Training_Gemstone.ipynb`
-- Explainability: `notebook/3_Explainability_with_LIME.ipynb`
-
-## 🧩 Professional Improvements Applied
-
-- Removed stale/legacy code blocks and accidental duplicate scripts
-- Added cleaner logging and exception handling
-- Replaced brittle serialization approach with joblib
-- Refactored training and prediction into maintainable pipelines
-- Modernized dependencies and package metadata
-- Upgraded frontend styling and responsive UX
-
-## 📌 Portfolio Tips
-
-- Add screenshots/GIFs of Streamlit + Flask UI under a new `assets/` folder
-- Publish demo on Streamlit Community Cloud
-- Add CI for lint + tests (pytest + ruff) as a next enhancement
-
----
-
-If you found this useful, give it a ⭐ and use it as a template for production-ready regression projects.
