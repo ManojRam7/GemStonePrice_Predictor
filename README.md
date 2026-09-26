@@ -1,4 +1,4 @@
-# Gemstone Price Predictor
+# Gemstone Price Analyser
 
 Predicts the price of a gemstone from its carat, cut, colour, clarity, depth, table and x, y, z
 dimensions. A modular training pipeline (ingestion, transformation, model selection) tunes several

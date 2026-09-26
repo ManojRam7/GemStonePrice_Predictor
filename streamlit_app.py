@@ -3,7 +3,7 @@ import streamlit as st
 
 from src.pipeline.predict_pipeline import PredictPipeline
 
-st.set_page_config(page_title="Gemstone Price Predictor", layout="wide")
+st.set_page_config(page_title="Gemstone Price Analyser", layout="wide")
 
 st.markdown(
     """
@@ -27,7 +27,7 @@ st.markdown(
 st.markdown(
     """
     <div class="hero">
-      <h1>Gemstone Price Predictor</h1>
+      <h1>Gemstone Price Analyser</h1>
       <p>Estimate a gemstone's price from its carat, cut, colour, clarity and dimensions.</p>
     </div>
     """,
